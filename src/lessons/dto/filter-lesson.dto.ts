@@ -7,4 +7,8 @@ export class FilterLessonDto {
   levels: string[];
   @IsOptional()
   topics: string[];
+  @IsOptional()
+  limit: string;
+  @IsOptional()
+  skip: string;
 }

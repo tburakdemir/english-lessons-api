@@ -25,14 +25,9 @@ export class LessonsController {
   }
 
   @Get()
-  findAll() {
-    return this.lessonsService.findAll();
-  }
-
-  @Get('/filter')
   @UsePipes(new ValidationPipe({ transform: true }))
-  findByQuery(@Query() query: FilterLessonDto) {
-    return this.lessonsService.findByQuery(query);
+  findAll(@Query() query: FilterLessonDto) {
+    return this.lessonsService.findAll(query);
   }
 
   @Get(':id')

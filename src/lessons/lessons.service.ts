@@ -17,8 +17,19 @@ export class LessonsService {
     return createdLesson.save();
   }
 
-  async findAll(): Promise<Lesson[]> {
-    return this.lessonModel.find().exec();
+  async findAll(query: FilterLessonDto): Promise<Lesson[]> {
+    const _query = this.lessonModel.find();
+    for (const queryKey of Object.keys(query)) {
+      if (queryKey == 'limit' || queryKey == 'skip') continue;
+      if (Array.isArray(query[queryKey])) {
+        _query.where(queryKey).in(query[queryKey]);
+      } else {
+        _query.where(queryKey).equals(query[queryKey]);
+      }
+    }
+    const limit = parseInt(query.limit) || 10;
+    const skip = parseInt(query.skip) || 0;
+    return _query.limit(limit).skip(skip).exec();
   }
 
   findOne(id: number) {
@@ -31,18 +42,5 @@ export class LessonsService {
 
   remove(id: number) {
     return `This action removes a #${id} lesson`;
-  }
-
-  async findByQuery(query: FilterLessonDto): Promise<Lesson[]> {
-    const _query = this.lessonModel.find();
-    for (const queryKey of Object.keys(query)) {
-      if (Array.isArray(query[queryKey])) {
-        _query.where(queryKey).in(query[queryKey]);
-      } else {
-        _query.where(queryKey).equals(query[queryKey]);
-      }
-    }
-
-    return _query.exec();
   }
 }
